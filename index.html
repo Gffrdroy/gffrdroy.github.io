@@ -1,3 +1,10 @@
+Here is your completely upgraded `index.html` file.
+
+The parallax engine has been re-engineered using `requestAnimationFrame` for ultra-smooth performance, and a secondary reverse-parallax layer has been added to the hero text to create an immersive sense of 3D depth. The background grid has been sharpened and enhanced to seamlessly run behind every single section of the site, giving it a premium, high-tech telemetry aesthetic. A dedicated **Contact** section has also been integrated with an automatic `mailto:` client hook.
+
+Overwrite your current repository file with this master build:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photon | STEM Team</title>
     
+    <!-- Link to the custom tab icon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
+    <!-- Embedded Stylesheet -->
     <style>
         :root {
             --primary-yellow: #ffeb00;  
@@ -31,7 +40,7 @@
             overflow-x: hidden;
         }
 
-        /* Re-engineered Responsive Parallax Layer */
+        /* Re-engineered Ultra-Smooth Parallax Layer */
         #cinematic-bg {
             position: fixed;
             top: 0; 
@@ -51,16 +60,16 @@
             will-change: transform;
         }
 
-        /* Subtle grid overlay to enhance the 3D high-tech track depth */
+        /* Sharpened High-Tech Cyber Grid running throughout the entire site structure */
         #bg-grid-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: linear-gradient(rgba(255, 235, 0, 0.015) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 235, 0, 0.015) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-image: linear-gradient(rgba(255, 235, 0, 0.035) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 235, 0, 0.035) 1px, transparent 1px);
+            background-size: 40px 40px;
             z-index: -1;
             pointer-events: none;
         }
@@ -116,7 +125,7 @@
         nav ul {
             list-style: none;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin: 0;
             padding: 0;
         }
@@ -149,6 +158,7 @@
             min-height: 90vh;
             padding: 40px 20px;
             box-sizing: border-box;
+            perspective: 1000px;
         }
 
         #hero h2 {
@@ -158,6 +168,7 @@
             margin: 0 0 10px 0;
             font-weight: 900;
             color: #000000; 
+            will-change: transform;
         }
 
         #hero p {
@@ -167,11 +178,12 @@
             letter-spacing: 5px;
             text-transform: uppercase;
             margin: 0 0 45px 0;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
             display: inline-block;
             padding: 6px 14px;
             border-radius: 6px;
             cursor: default;
+            will-change: transform;
         }
 
         #hero p:hover, #hero p:active {
@@ -417,6 +429,30 @@
             box-shadow: 0 0 15px rgba(255, 235, 0, 0.4);
         }
 
+        /* Global Interactive Contact Portal Setup */
+        #contact {
+            text-align: center;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .contact-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 235, 0, 0.12);
+            border-radius: 16px;
+            padding: 55px 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .contact-box p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.7;
+            margin: 0 0 35px 0;
+        }
+
         /* Institutional Logos Container */
         .institutional-logos {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -493,6 +529,7 @@
 </head>
 <body>
 
+    <!-- 3D Layer Framework elements -->
     <div id="cinematic-bg"></div>
     <div id="bg-grid-overlay"></div>
 
@@ -503,18 +540,22 @@
             <li><a href="#team">Team</a></li>
             <li><a href="#sponsors">Partners</a></li>
             <li><a href="#portfolios">Docs</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 
+    <!-- Entry Zone -->
     <header id="hero">
         <h2 class="reveal">PHOTON</h2>
         <p class="reveal">At the speed of light</p>
         <div id="car-viewer" class="reveal"></div>
     </header>
 
+    <!-- Team Roles Section -->
     <section id="team">
         <h3 class="section-title reveal">Team Roles</h3>
         
+        <!-- Engineering Division -->
         <div style="margin-bottom: 60px;">
             <h4 class="sub-tier-title reveal">Engineering Division</h4>
             <div class="team-grid">
@@ -538,6 +579,7 @@
             </div>
         </div>
 
+        <!-- Enterprise Division -->
         <div>
             <h4 class="sub-tier-title reveal">Enterprise Division</h4>
             <div class="team-grid">
@@ -570,6 +612,7 @@
         </div>
     </section>
 
+    <!-- Sponsorship Pipeline -->
     <section id="sponsors">
         <h3 class="section-title reveal">Our Partners</h3>
         <div class="sponsor-tier-container">
@@ -604,6 +647,7 @@
         </div>
     </section>
 
+    <!-- Documents -->
     <section id="portfolios">
         <h3 class="section-title reveal">Engineering & Enterprise</h3>
         <div class="portfolio-grid">
@@ -620,10 +664,21 @@
         </div>
     </section>
 
+    <!-- Dedicated Interactive Contact Section -->
+    <section id="contact">
+        <h3 class="section-title reveal">Connect With Us</h3>
+        <div class="contact-box reveal">
+            <p>Interested in exploring corporate partnerships, supporting our race campaign, or collaborating on STEM initiatives? Launch an immediate communication channel straight to our management hub below.</p>
+            <a href="mailto:photonf1team@example.com?subject=Photon%20F1%20Schools%20Inquiry" class="btn">Launch Email App</a>
+        </div>
+    </section>
+
+    <!-- Affiliated Institutional Logos Section -->
     <div class="institutional-logos">
         <h5>Affiliated Entities</h5>
         <div class="logo-flex">
             
+            <!-- STEM Racing Affiliate Asset Link -->
             <a href="https://rea.org.au/f1-in-schools/" target="_blank" class="logo-item reveal">
                 <div class="logo-wrapper">
                     <img src="stem_racing_logo.PNG" alt="STEM Racing Australia">
@@ -631,6 +686,7 @@
                 <p>STEM Racing</p>
             </a>
 
+            <!-- Riverside High School Affiliate Asset Link -->
             <a href="https://riversidehigh.education.tas.edu.au/" target="_blank" class="logo-item reveal">
                 <div class="logo-wrapper">
                     <img src="riverside_logo.JPG" alt="Riverside High School Launceston">
@@ -655,15 +711,39 @@
         window.scrollTo(0, 0);
 
         const bgGradient = document.getElementById('cinematic-bg');
+        const heroTitle = document.querySelector('#hero h2');
+        const heroSubtitle = document.querySelector('#hero p');
 
-        // Fixed Parallax Engine
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * 0.4;
+        // Re-engineered Multi-Layered Scroll Parallax Core using requestAnimationFrame
+        let lastKnownScrollPosition = 0;
+        let ticking = false;
+
+        function updateParallax(scrollPos) {
+            // Layer 1: Background moves down slower for dramatic vertical elongation
+            bgGradient.style.transform = `translateY(-${scrollPos * 0.35}px) scale(${1 + (scrollPos * 0.00015)})`;
             
-            bgGradient.style.transform = `translateY(-${rate}px) scaleY(${1 - (scrolled * 0.0005)})`;
+            // Layer 2: Hero text layer lifts up slightly faster than background scroll to create 3D window depth
+            if (scrollPos < window.innerHeight) {
+                const textFactor = scrollPos * 0.22;
+                const subFactor = scrollPos * 0.14;
+                heroTitle.style.transform = `translateY(${textFactor}px)`;
+                heroSubtitle.style.transform = `translateY(${subFactor}px)`;
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            lastKnownScrollPosition = window.pageYOffset;
+
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateParallax(lastKnownScrollPosition);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         }, { passive: true });
 
+        // Scroll Intersection Reveal System 
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -685,3 +765,5 @@
     </script>
 </body>
 </html>
+
+```
