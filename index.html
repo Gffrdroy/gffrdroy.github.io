@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photon Racing | STEM Team</title>
+    <title>Photon | STEM Team</title>
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
@@ -22,6 +22,7 @@
             scroll-behavior: smooth;
         }
 
+        /* Custom Mini F1 Car Cursor Setup */
         body {
             margin: 0;
             padding: 0;
@@ -29,23 +30,28 @@
             background-color: #000000;
             color: var(--text-light);
             overflow-x: hidden;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect x='4' y='7' width='4' height='5' rx='1' fill='%23111111'/><rect x='24' y='7' width='4' height='5' rx='1' fill='%23111111'/><rect x='3' y='21' width='5' height='7' rx='1' fill='%23111111'/><rect x='24' y='21' width='5' height='7' rx='1' fill='%23111111'/><path d='M13,3 L19,3 L18,25 L14,25 Z' fill='%23ffeb00'/><path d='M8,14 L24,14 L21,21 L11,21 Z' fill='%23ffeb00'/><rect x='5' y='26' width='22' height='3' fill='%23333333'/></svg>") 16 3, auto;
         }
 
-        /* Deep-Space 3D Parallax Background Layer - Extended & Optimized */
+        /* Custom F1 Cursor Variant for Clickable Items */
+        a, button, .btn, nav h1, nav a, #hero p, .sub-tier-title {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect x='4' y='7' width='4' height='5' rx='1' fill='%23ffeb00'/><rect x='24' y='7' width='4' height='5' rx='1' fill='%23ffeb00'/><rect x='3' y='21' width='5' height='7' rx='1' fill='%23ffeb00'/><rect x='24' y='21' width='5' height='7' rx='1' fill='%23ffeb00'/><path d='M13,3 L19,3 L18,25 L14,25 Z' fill='%23ffffff'/><path d='M8,14 L24,14 L21,21 L11,21 Z' fill='%23ffffff'/><rect x='5' y='26' width='22' height='3' fill='%23ffeb00'/></svg>") 16 3, pointer;
+        }
+
+        /* Re-engineered Background Gradient: Swift transition into Gray and deep Black */
         #cinematic-bg {
             position: fixed;
             top: 0; 
             left: 0;
             width: 100vw;
-            height: 300vh; /* Extra-long layout to prevent ever running out of tracking room */
+            height: 300vh; 
             background: linear-gradient(180deg, 
                 #ffeb00 0%, 
-                #ffeb00 10%, /* Dense yellow light source zone at launch line */
-                #ccbc00 25%,
-                #8c8100 45%,
-                #403b00 65%,
-                #141300 85%,
-                #000000 100%
+                #9e9a80 8%,   /* Quick blend to keep transition from turning green */
+                #444444 22%,  /* Solid High-Tech Gray core */
+                #141414 45%,  /* Deep charcoal fade */
+                #000000 65%,  /* Total track black dominates the lower sections */
+                #000000 100__
             );
             z-index: -2;
             pointer-events: none;
@@ -105,10 +111,8 @@
             transition: all 0.3s ease;
             padding: 4px 10px;
             border-radius: 6px;
-            cursor: pointer;
         }
 
-        /* Flips to dark text on yellow background fill when triggered */
         nav h1:hover, nav h1:active {
             color: #000000;
             background-color: var(--primary-yellow);
@@ -155,7 +159,7 @@
         }
 
         #hero h2 {
-            font-size: 4.5rem;
+            font-size: 5.5rem;
             text-transform: uppercase;
             letter-spacing: -1px;
             margin: 0 0 10px 0;
@@ -173,13 +177,11 @@
             text-transform: uppercase;
             margin: 0 0 45px 0;
             transition: all 0.3s ease;
-            cursor: default;
             display: inline-block;
             padding: 6px 14px;
             border-radius: 6px;
         }
 
-        /* Inverts slogan to dark text on yellow capsule fill for high visibility */
         #hero p:hover, #hero p:active {
             color: #000000;
             background-color: var(--primary-yellow);
@@ -398,213 +400,6 @@
             margin-bottom: 30px;
         }
 
-        /* Button Vice Versa Inversion - Flips from Yellow Background to Dark Background */
         .btn {
             display: inline-block;
             padding: 12px 26px;
-            background-color: var(--primary-yellow);
-            color: var(--text-dark);
-            border: 2px solid var(--primary-yellow);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 800;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover, .btn:active {
-            background-color: #000000;
-            color: var(--primary-yellow);
-            border-color: var(--primary-yellow);
-            transform: scale(1.03);
-            box-shadow: 0 0 15px rgba(255, 235, 0, 0.4);
-        }
-
-        footer {
-            text-align: center;
-            padding: 70px 20px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            letter-spacing: 1px;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="cinematic-bg"></div>
-    <div id="bg-grid-overlay"></div>
-
-    <nav>
-        <h1>PHOTON RACING</h1>
-        <ul>
-            <li><a href="#hero">Track</a></li>
-            <li><a href="#team">Team</a></li>
-            <li><a href="#sponsors">Partners</a></li>
-            <li><a href="#portfolios">Docs</a></li>
-        </ul>
-    </nav>
-
-    <header id="hero">
-        <h2 class="reveal">PHOTON RACING</h2>
-        <p class="reveal">At the speed of light</p>
-        <div id="car-viewer" class="reveal"></div>
-    </header>
-
-    <section id="team">
-        <h3 class="section-title reveal">Team Roles</h3>
-        
-        <div style="margin-bottom: 60px;">
-            <h4 class="sub-tier-title reveal">Engineering Division</h4>
-            <div class="team-grid">
-                
-                <div class="team-card reveal">
-                    <div class="member-image-slot">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Gifford Roy</h4>
-                        <p>Design Engineer</p>
-                    </div>
-                </div>
-
-                <div class="team-card reveal">
-                    <div class="member-image-slot">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Bruno Gomez Pena</h4>
-                        <p>Manufacturing Engineer</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div>
-            <h4 class="sub-tier-title reveal">Enterprise Division</h4>
-            <div class="team-grid">
-                
-                <div class="team-card reveal">
-                    <div class="member-image-slot">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Evan Goodwin</h4>
-                        <p>Team Manager</p>
-                    </div>
-                </div>
-
-                <div class="team-card reveal">
-                    <div class="member-image-slot">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Zeke Short</h4>
-                        <p>Resource Manager</p>
-                    </div>
-                </div>
-
-                <div class="team-card reveal">
-                    <div class="member-image-slot">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Lizzie Cooke</h4>
-                        <p>Graphic Design</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="sponsors">
-        <h3 class="section-title reveal">Our Partners</h3>
-        <div class="sponsor-tier-container">
-            
-            <div class="tier-group platinum reveal">
-                <div class="tier-title">Platinum Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                </div>
-            </div>
-
-            <div class="tier-group gold reveal">
-                <div class="tier-title">Gold Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                </div>
-            </div>
-
-            <div class="tier-group silver reveal">
-                <div class="tier-title">Silver Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="portfolios">
-        <h3 class="section-title reveal">Engineering & Enterprise</h3>
-        <div class="portfolio-grid">
-            <div class="portfolio-card reveal">
-                <h4>Engineering Portfolio</h4>
-                <p>Deep-dive analysis on fluid dynamics, chassis design optimization, and machining tolerances.</p>
-                <a href="#" class="btn">View Document</a>
-            </div>
-            <div class="portfolio-card reveal">
-                <h4>Enterprise Portfolio</h4>
-                <p>Brand activation strategy, corporate outreach systems, budget tracking, and project workflow matrices.</p>
-                <a href="#" class="btn">View Document</a>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 PHOTON RACING. ALL RIGHTS RESERVED.</p>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="script.js"></script>
-
-    <script>
-        // Stops the browser from jumping down to anchor links when refreshing
-        if (window.history.scrollRestoration) {
-            window.history.scrollRestoration = 'manual';
-        }
-        // Force screen layout to reset to top on page ready load
-        window.scrollTo(0, 0);
-
-        const bgGradient = document.getElementById('cinematic-bg');
-
-        // Combined scroll performance listener
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            
-            // Fixed Direction: Moving negative Y shifts the vector grid slower, transitioning to dark naturally without lines
-            bgGradient.style.transform = `translateY(-${scrolled * 0.3}px)`;
-        }, { passive: true });
-
-        // Scroll Reveal Activation Engine
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target); 
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(element => {
-            observer.observe(element);
-        });
-    </script>
-</body>
-</html>
