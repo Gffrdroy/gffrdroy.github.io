@@ -72,6 +72,46 @@
             transform: translateY(calc(var(--scroll-y) * 0.45));
         }
 
+        /* Ambient Parallax Grid Glow Space Platform Wrapper */
+        #glow-particles-container {
+            position: fixed;
+            top: -40vh;
+            left: 0;
+            width: 100vw;
+            height: 180vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .glow-particle {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary-yellow);
+            border-radius: 50%;
+            /* Layered dual-blur glow structure to mimic a glowing lamp assembly */
+            box-shadow: 0 0 10px 4px rgba(255, 235, 0, 0.4),
+                        0 0 30px 12px rgba(255, 235, 0, 0.15);
+            will-change: transform;
+            transform: translateY(calc(var(--scroll-y) * var(--parallax-speed)));
+            animation: breatheGlow var(--pulse-duration) ease-in-out infinite alternate;
+            animation-delay: var(--pulse-delay);
+        }
+
+        @keyframes breatheGlow {
+            0% {
+                opacity: 0.05;
+                filter: brightness(0.6);
+            }
+            100% {
+                opacity: 0.65;
+                filter: brightness(1.3);
+            }
+        }
+
         /* Scroll Animation Reveal Targets */
         .reveal {
             opacity: 0;
@@ -188,10 +228,6 @@
             background: transparent;
         }
 
-        /* PARALLAX LAYER 4: Foreground Typography Frame
-           CRITICAL REPAIR: Shifted from center alignment to flex-start with top padding 
-           to cleanly lift the text up into the empty space.
-        */
         #hero-text-container {
             position: absolute;
             top: 0;
@@ -253,6 +289,8 @@
             height: 100%;
             background-color: transparent !important;
             background: transparent !important;
+            position: relative;
+            z-index: 2;
             pointer-events: none;
             --interpolation-decay: 5;
             transition: pointer-events 0.3s ease;
@@ -353,9 +391,7 @@
             box-shadow: 0 10px 25px rgba(220, 39, 67, 0.35);
         }
 
-        /* FULLSCREEN ADJUSTMENTS: Hides details, moves button, and locks the background grid 
-           into the isolated window stacking viewport context cleanly.
-        */
+        /* FULLSCREEN ADJUSTMENTS: Retains grid patterns and glowing particles inside isolated hardware windows */
         #car-viewer:fullscreen .viewer-details {
             display: none !important;
         }
@@ -367,7 +403,7 @@
             background-size: 50px 50px !important;
         }
 
-        /* Webkit browser mirror targeting */
+        /* Webkit layout platform mapping mirror */
         #car-viewer:-webkit-full-screen .viewer-details {
             display: none !important;
         }
@@ -735,6 +771,8 @@
         </div>
         
         <div id="car-viewer">
+            <div id="glow-particles-container"></div>
+
             <model-viewer 
                 id="animated-car"
                 src="2024aramidversion2.0029.glb" 
@@ -910,6 +948,34 @@
             history.replaceState("", document.title, window.location.pathname + window.location.search);
         }
         window.scrollTo(0, 0);
+
+        // Ambient cyber glow array generation script
+        (function initializeGridGlowSystem() {
+            const glowTargetBox = document.getElementById('glow-particles-container');
+            const totalGlowPoints = 24; // Balanced cluster density matrix
+
+            for (let i = 0; i < totalGlowPoints; i++) {
+                const node = document.createElement('div');
+                node.classList.add('glow-particle');
+                
+                // Random positioning across coordinate field
+                const nodeX = Math.random() * 100; 
+                const nodeY = Math.random() * 180 - 40; // vh translation array bounds
+                
+                // Multi-plane depth multiplier variations clustered near grid speed (0.45)
+                const nodeParallaxSpeed = 0.35 + (Math.random() * 0.2); 
+                const nodeBreatheDuration = 3.5 + (Math.random() * 4); 
+                const nodePhaseOffset = Math.random() * -6; // Phase displacement to mix up synchronized looping
+
+                node.style.setProperty('--x', `${nodeX}vw`);
+                node.style.setProperty('--y', `${nodeY}vh`);
+                node.style.setProperty('--parallax-speed', nodeParallaxSpeed);
+                node.style.setProperty('--pulse-duration', `${nodeBreatheDuration}s`);
+                node.style.setProperty('--pulse-delay', `${nodePhaseOffset}s`);
+                
+                glowTargetBox.appendChild(node);
+            }
+        })();
 
         const rootStyle = document.documentElement.style;
         let ticking = false;
