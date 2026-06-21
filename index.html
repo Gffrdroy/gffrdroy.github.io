@@ -1,558 +1,1432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHOTON - F1 in Schools</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photon | STEM Team</title>
+    
+    <!-- Link to the custom tab icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <!-- Import the web component for interactive 3D rendering and animations -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
-    <style>
-        /* Added baseline variables for your CSS to reference */
-        :root {
-            --primary-yellow: #ffeb00;
-            --text-muted: #a0a0a0;
-            --text-dark: #121212;
-            --card-bg: rgba(20, 20, 20, 0.75);
-        }
+    <!-- Embedded Stylesheet -->
+    <style>
+        :root {
+            --primary-yellow: #ffeb00;  
+            --deep-black: #000000;      
+            --card-bg: rgba(12, 12, 12, 0.85);
+            --text-light: #ffffff;
+            --text-muted: #aaaaaa;
+            --text-dark: #000000;
+            
+            /* High-performance scroll coordinate tracking primitive */
+            --scroll-y: 0px;
+        }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #050505;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif; /* Example font */
-        }
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--deep-black);
+        }
 
-        /* --- Your Original CSS Starts Here --- */
-        .portfolio-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--deep-black);
+            color: var(--text-light);
+            overflow-x: hidden;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
 
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            background-color: var(--primary-yellow);
-            color: var(--text-dark);
-            border: 2px solid var(--primary-yellow);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 800;
-            font-size: 0.8rem;
-            letter-spacing: 1.5px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        /* PARALLAX LAYER 1: Cyber Grid Matrix 
+           Configured as a static viewport overlay that seamlessly shifts texture loops
+        */
+        #bg-grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: linear-gradient(rgba(255, 235, 0, 0.07) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 235, 0, 0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+            background-position-y: calc(var(--scroll-y) * -0.15);
+            z-index: 1;
+            pointer-events: none;
+        }
 
-        .btn:hover {
-            background-color: #000000;
-            color: var(--primary-yellow);
-            border-color: var(--primary-yellow);
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255, 235, 0, 0.4);
-        }
+        /* Ambient Parallax Grid Glow Space Platform Wrapper */
+        #glow-particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
 
-        #contact {
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 100px 20px; /* Added padding to ensure visibility */
-        }
+        /* Massively expanded, ultra-bright glowing orb structures */
+        .glow-particle {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: var(--size, 25px);
+            height: var(--size, 25px);
+            background-color: var(--primary-yellow);
+            border-radius: 50%;
+            /* Multi-layered extreme glow envelope for high-intensity luminescence */
+            box-shadow: 0 0 25px 10px rgba(255, 235, 0, 0.6),
+                        0 0 60px 25px rgba(255, 235, 0, 0.3),
+                        0 0 120px 50px rgba(255, 235, 0, 0.15);
+            animation: breatheGlow var(--pulse-duration) ease-in-out infinite alternate;
+            animation-delay: var(--pulse-delay);
+            will-change: opacity, transform;
+            transform: translateY(calc(var(--scroll-y) * 0.08));
+        }
 
-        .contact-box {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 235, 0, 0.2);
-            border-radius: 12px;
-            padding: 70px 50px;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 235, 0, 0.05);
-        }
+        @keyframes breatheGlow {
+            0% {
+                opacity: 0.2;
+                transform: translateY(calc(var(--scroll-y) * 0.08)) scale(0.85);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translateY(calc(var(--scroll-y) * 0.08)) scale(1.15);
+            }
+        }
 
-        .contact-box p {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.8;
-            margin: 0 0 45px 0;
-            letter-spacing: 0.3px;
-        }
+        /* Scroll Animation Reveal Targets */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.215, 0.610, 0.355, 1), 
+                        transform 1s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
 
-        .institutional-logos {
-            position: relative;
-            z-index: 35;
-            border-top: 1px solid rgba(255, 235, 0, 0.1);
-            background-color: rgba(2, 2, 2, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 80px 20px;
-            text-align: center;
-        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        .institutional-logos h5 {
-            margin: 0 0 45px 0;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: #666666;
-        }
+        /* Navigation Structure */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 60px;
+            background-color: rgba(0, 0, 0, 0.95); 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); 
+            border-bottom: 1px solid rgba(255, 235, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        .logo-flex {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 100px;
-            flex-wrap: wrap;
-        }
+        .nav-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
 
-        .logo-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            text-decoration: none;
-        }
+        nav h1 {
+            color: var(--primary-yellow);
+            margin: 0;
+            letter-spacing: 6px;
+            font-weight: 900;
+            font-size: 1.6rem;
+            text-shadow: 0 0 15px rgba(255, 235, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
 
-        .logo-item:hover {
-            transform: scale(1.04);
-        }
+        /* Studio Interaction Switch Toggle */
+        .studio-toggle-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 235, 0, 0.4);
+            color: var(--primary-yellow);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
 
-        .logo-wrapper {
-            height: 110px;
-            width: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+        .studio-toggle-btn:hover {
+            background: rgba(255, 235, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 235, 0, 0.2);
+            transform: translateY(-1px);
+        }
 
-        .logo-wrapper img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.8));
-        }
+        .studio-toggle-btn.active-studio {
+            background: var(--primary-yellow);
+            color: #000000;
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 20px rgba(255, 235, 0, 0.4);
+        }
 
-        .logo-item p {
-            margin: 0;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.5);
-        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
 
-        footer {
-            position: relative;
-            z-index: 35;
-            text-align: center;
-            padding: 50px 20px;
-            font-size: 0.8rem;
-            color: #555555;
-            border-top: 1px solid rgba(255, 235, 0, 0.1);
-            background-color: #000000;
-            letter-spacing: 1.5px;
-        }
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
 
-        /* --- Missing structural CSS for sections added for safety --- */
-        section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-        .section-title { text-align: center; margin-bottom: 50px; }
-        .team-grid, .sponsor-grid, .portfolio-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-        .team-card, .sponsor-card, .portfolio-card { background: var(--card-bg); padding: 20px; border-radius: 8px; text-align: center; width: 250px; }
-        #hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        #car-viewer { width: 100%; height: 60vh; position: relative; }
-        model-viewer { width: 100%; height: 100%; }
-        nav { display: flex; justify-content: space-between; padding: 20px; position: fixed; width: 100%; top: 0; z-index: 100; background: rgba(0,0,0,0.8); }
-        nav ul { display: flex; gap: 20px; list-style: none; }
-        nav a { color: white; text-decoration: none; }
-    </style>
+        nav a:hover {
+            color: var(--primary-yellow);
+            opacity: 1;
+        }
+
+        /* Spacious Open Area Hero Frame Block */
+        #hero {
+            position: relative;
+            width: 100vw;
+            height: calc(100vh - 95px); 
+            min-height: 650px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            z-index: 10;
+        }
+
+        #hero-text-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            padding-top: 7vh; 
+            align-items: center;
+            z-index: 15;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+            transform: translateY(calc(var(--scroll-y) * 0.15));
+            box-sizing: border-box;
+        }
+
+        #hero h2 {
+            font-size: 7.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0 0 10px 0;
+            font-weight: 900;
+            color: var(--primary-yellow); 
+            text-shadow: 0 0 40px rgba(255, 235, 0, 0.35);
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin: 0;
+            opacity: 0.9;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        /* PARALLAX LAYER 3: Interactive 3D Model Viewport */
+        #car-viewer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
+            z-index: 12;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            will-change: transform;
+            transform: translateY(calc(var(--scroll-y) * 0.28));
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: transparent !important;
+            background: transparent !important;
+            position: relative;
+            z-index: 14;
+            pointer-events: none;
+            --interpolation-decay: 5;
+            transition: pointer-events 0.3s ease;
+        }
+
+        /* Fullscreen View Widget Switcher */
+        .fullscreen-toggle {
+            position: absolute;
+            bottom: 140px; 
+            left: 60px;
+            z-index: 25;
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid rgba(255, 235, 0, 0.4);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+        }
+
+        .fullscreen-toggle.visible-widget {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .fullscreen-toggle:hover {
+            background: var(--primary-yellow);
+            color: #000000;
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 20px rgba(255, 235, 0, 0.5);
+        }
+
+        /* Lower Media HUD Bar */
+        .viewer-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 45px 60px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 70%, transparent 100%);
+            border-top: none;
+            text-align: left;
+            z-index: 20;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .viewer-caption {
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            max-width: 60%;
+        }
+
+        .viewer-caption .highlight {
+            color: var(--primary-yellow);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .instagram-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .instagram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(220, 39, 67, 0.35);
+        }
+
+        /* FULLSCREEN ADJUSTMENTS */
+        #car-viewer:fullscreen .viewer-details { display: none !important; }
+        #car-viewer:fullscreen {
+            background-color: #000000 !important;
+            background-image: linear-gradient(rgba(255, 235, 0, 0.12) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 235, 0, 0.12) 1px, transparent 1px) !important;
+            background-size: 50px 50px !important;
+        }
+
+        #car-viewer:-webkit-full-screen .viewer-details { display: none !important; }
+        #car-viewer:-webkit-full-screen {
+            background-color: #000000 !important;
+            background-image: linear-gradient(rgba(255, 235, 0, 0.12) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 235, 0, 0.12) 1px, transparent 1px) !important;
+            background-size: 50px 50px !important;
+        }
+
+        #car-viewer:fullscreen .fullscreen-toggle { bottom: 50px; }
+        #car-viewer:-webkit-full-screen .fullscreen-toggle { bottom: 50px; }
+
+        /* Content Sections Base */
+        section {
+            position: relative;
+            z-index: 30; 
+            padding: 180px 60px;
+            max-width: 1300px;
+            margin: 0 auto;
+            background: transparent;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 90px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-yellow);
+            margin: 20px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        .sub-tier-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary-yellow);
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 800;
+            opacity: 0.9;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            position: relative;
+            padding: 4px 14px;
+            border-radius: 4px;
+            cursor: default;
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 45px;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 235, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            width: 290px; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        border-color 0.5s, box-shadow 0.5s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(255, 235, 0, 0.45);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 235, 0, 0.1);
+        }
+
+        .member-image-slot {
+            width: 100%;
+            height: 310px;
+            background-color: #080808;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555555;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 235, 0, 0.05);
+        }
+
+        .member-info {
+            padding: 30px 20px;
+        }
+
+        .member-info h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .member-info p {
+            margin: 0;
+            color: var(--primary-yellow);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.85;
+        }
+
+        .sponsor-tier-container {
+            display: flex;
+            flex-direction: column;
+            gap: 90px;
+        }
+
+        .tier-group {
+            text-align: center;
+        }
+
+        .tier-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 800;
+            margin-bottom: 45px;
+            color: #666666;
+        }
+
+        .tier-group.platinum .tier-title { color: #e5e4e2; text-shadow: 0 0 20px rgba(229,228,226,0.15); }
+        .tier-group.gold .tier-title { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.15); }
+
+        .sponsor-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .sponsor-card {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px dashed rgba(255, 235, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background 0.4s, border-style 0.4s, border-color 0.4s, color 0.4s, box-shadow 0.4s;
+            color: #666666;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .platinum .sponsor-card { width: 380px; height: 180px; }
+        .gold .sponsor-card { width: 300px; height: 140px; }
+        .silver .sponsor-card { width: 220px; height: 110px; font-size: 0.8rem; }
+
+        .sponsor-card:hover {
+            background: rgba(255, 235, 0, 0.04);
+            border-style: solid;
+            border-color: var(--primary-yellow);
+            color: var(--text-light);
+            box-shadow: 0 0 15px rgba(255, 235, 0, 0.15);
+        }
+
+        .portfolio-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 45px;
+        }
+
+        .portfolio-card {
+            background: var(--card-bg);
+            padding: 55px;
+            border-radius: 12px;
+            width: 340px;
+            border: 1px solid rgba(255, 235, 0, 0.1);
+            border-top: 4px solid var(--primary-yellow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 15px rgba(255, 235, 0, 0.05);
+        }
+
+        .portfolio-card h4 {
+            font-size: 1.5rem;
+            margin: 0 0 16px 0;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .portfolio-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
+            border: 2px solid var(--primary-yellow);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #000000;
+            color: var(--primary-yellow);
+            border-color: var(--primary-yellow);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 235, 0, 0.4);
+        }
+
+        #contact {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 235, 0, 0.2);
+            border-radius: 12px;
+            padding: 70px 50px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 235, 0, 0.05);
+        }
+
+        .contact-box p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            margin: 0 0 45px 0;
+            letter-spacing: 0.3px;
+        }
+
+        .institutional-logos {
+            position: relative;
+            z-index: 35;
+            border-top: 1px solid rgba(255, 235, 0, 0.1);
+            background-color: rgba(2, 2, 2, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .institutional-logos h5 {
+            margin: 0 0 45px 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #666666;
+        }
+
+        .logo-flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            flex-wrap: wrap;
+        }
+
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logo-item:hover {
+            transform: scale(1.04);
+        }
+
+        .logo-wrapper {
+            height: 110px;
+            width: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.8));
+        }
+
+        .logo-item p {
+            margin: 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        footer {
+            position: relative;
+            z-index: 35;
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 0.8rem;
+            color: #555555;
+            border-top: 1px solid rgba(255, 235, 0, 0.1);
+            background-color: #000000;
+            letter-spacing: 1.5px;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="bg-grid-overlay"></div>
-    <div id="glow-particles-container"></div>
+    <!-- Infrastructure Base Overlay Layouts -->
+    <div id="bg-grid-overlay"></div>
+    <div id="glow-particles-container"></div>
 
-    <nav>
-        <div class="nav-left-cluster">
-            <h1 style="cursor:pointer;" onclick="window.location.href=window.location.pathname">PHOTON</h1>
-            <button class="studio-toggle-btn btn" id="studio-master-toggle">Explore Car</button>
-        </div>
-        <ul>
-            <li><a href="#team">Team</a></li>
-            <li><a href="#sponsors">Partners</a></li>
-            <li><a href="#portfolios">Docs</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+    <nav>
+        <div class="nav-left-cluster">
+            <h1 onclick="window.location.href=window.location.pathname">PHOTON</h1>
+            <button class="studio-toggle-btn" id="studio-master-toggle">Explore Car</button>
+        </div>
+        <ul>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#sponsors">Partners</a></li>
+            <li><a href="#portfolios">Docs</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-    <header id="hero">
-        <div id="hero-text-container">
-            <h2>PHOTON</h2>
-            <p>At the speed of light</p>
-        </div>
-        
-        <div id="car-viewer">
-            <model-viewer 
-                id="animated-car"
-                src="2024aramidversion2.0029.glb" 
-                alt="Aramid - 2024 fastest car" 
-                autoplay
-                shadow-intensity="1"
-                exposure="1.25">
-            </model-viewer>
+    <!-- Entry Zone Layout -->
+    <header id="hero">
+        <div id="hero-text-container">
+            <h2>PHOTON</h2>
+            <p>At the speed of light</p>
+        </div>
+        
+        <div id="car-viewer">
+            <model-viewer 
+                id="animated-car"
+                src="2024aramidversion2.0029.glb" 
+                alt="Aramid - 2024 fastest car" 
+                autoplay
+                shadow-intensity="1"
+                exposure="1.25">
+            </model-viewer>
 
-            <button class="fullscreen-toggle btn" style="position: absolute; bottom: 20px; right: 20px;" id="fullscreen-widget" title="Toggle Fullscreen Render View">
-                <span>⛶</span> Fullscreen
-            </button>
+            <button class="fullscreen-toggle" id="fullscreen-widget" title="Toggle Fullscreen Render View">
+                <span>⛶</span> Fullscreen
+            </button>
 
-            <div class="viewer-details" style="text-align: center; margin-top: 20px;">
-                <p class="viewer-caption">
-                    2024 fastest car from previous development team, <span class="highlight" style="color: var(--primary-yellow);">aramid</span>. this is the fastest car in the states history
-                </p>
-                <a href="https://www.instagram.com/photonstemracing?utm_source=qr&igsh=MW5sNTFzbm5vbXVrdA%3D%3D" target="_blank" rel="noopener" class="instagram-btn btn">
-                    <span>📸</span> View @photonstemracing
-                </a>
-            </div>
-        </div>
-    </header>
+            <div class="viewer-details">
+                <p class="viewer-caption">
+                    2024 fastest car from previous development team, <span class="highlight">aramid</span>. this is the fastest car in the states history
+                </p>
+                <a href="https://www.instagram.com/photonstemracing?utm_source=qr&igsh=MW5sNTFzbm5vbXVrdA%3D%3D" target="_blank" rel="noopener" class="instagram-btn">
+                    <span>📸</span> View @photonstemracing
+                </a>
+            </div>
+        </div>
+    </header>
 
-    <section id="team">
-        <h3 class="section-title reveal">Team Roles</h3>
-        
-        <div style="margin-bottom: 80px;">
-            <h4 class="sub-tier-title reveal" style="text-align:center; margin-bottom: 30px;">Engineering Division</h4>
-            <div class="team-grid">
-                <div class="team-card reveal">
-                    <div class="member-image-slot" style="height: 150px; background: #333; margin-bottom: 15px;">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Gifford Roy</h4>
-                        <p>Design Engineer</p>
-                    </div>
-                </div>
-                <div class="team-card reveal">
-                    <div class="member-image-slot" style="height: 150px; background: #333; margin-bottom: 15px;">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Bruno Gomez Pena</h4>
-                        <p>Manufacturing Engineer</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Team Roles Section -->
+    <section id="team">
+        <h3 class="section-title reveal">Team Roles</h3>
+        
+        <div style="margin-bottom: 80px;">
+            <h4 class="sub-tier-title reveal">Engineering Division</h4>
+            <div class="team-grid">
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Gifford Roy</h4>
+                        <p>Design Engineer</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Bruno Gomez Pena</h4>
+                        <p>Manufacturing Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div>
-            <h4 class="sub-tier-title reveal" style="text-align:center; margin-bottom: 30px;">Enterprise Division</h4>
-            <div class="team-grid">
-                <div class="team-card reveal">
-                    <div class="member-image-slot" style="height: 150px; background: #333; margin-bottom: 15px;">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Evan Goodwin</h4>
-                        <p>Team Manager</p>
-                    </div>
-                </div>
-                <div class="team-card reveal">
-                    <div class="member-image-slot" style="height: 150px; background: #333; margin-bottom: 15px;">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Zeke Short</h4>
-                        <p>Resource Manager</p>
-                    </div>
-                </div>
-                <div class="team-card reveal">
-                    <div class="member-image-slot" style="height: 150px; background: #333; margin-bottom: 15px;">Placeholder Photo</div>
-                    <div class="member-info">
-                        <h4>Lizzie Cooke</h4>
-                        <p>Graphic Design</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <div>
+            <h4 class="sub-tier-title reveal">Enterprise Division</h4>
+            <div class="team-grid">
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Evan Goodwin</h4>
+                        <p>Team Manager</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Zeke Short</h4>
+                        <p>Resource Manager</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Lizzie Cooke</h4>
+                        <p>Graphic Design</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <section id="sponsors">
-        <h3 class="section-title reveal">Our Partners</h3>
-        <div class="sponsor-tier-container">
-            <div class="tier-group platinum reveal" style="margin-bottom: 40px;">
-                <div class="tier-title" style="text-align:center; color: #e5e4e2; font-weight: bold; margin-bottom: 20px;">Platinum Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                </div>
-            </div>
-            <div class="tier-group gold reveal" style="margin-bottom: 40px;">
-                <div class="tier-title" style="text-align:center; color: #ffd700; font-weight: bold; margin-bottom: 20px;">Gold Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                    <div class="sponsor-card">Sponsor Slot</div>
-                </div>
-            </div>
-            <div class="tier-group silver reveal">
-                <div class="tier-title" style="text-align:center; color: #c0c0c0; font-weight: bold; margin-bottom: 20px;">Silver Partners</div>
-                <div class="sponsor-grid">
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                    <div class="sponsor-card">Partner</div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Sponsorship Pipeline -->
+    <section id="sponsors">
+        <h3 class="section-title reveal">Our Partners</h3>
+        <div class="sponsor-tier-container">
+            <div class="tier-group platinum reveal">
+                <div class="tier-title">Platinum Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                </div>
+            </div>
+            <div class="tier-group gold reveal">
+                <div class="tier-title">Gold Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                </div>
+            </div>
+            <div class="tier-group silver reveal">
+                <div class="tier-title">Silver Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <section id="portfolios">
-        <h3 class="section-title reveal">Engineering & Enterprise</h3>
-        <div class="portfolio-grid">
-            <div class="portfolio-card reveal">
-                <h4>Engineering Portfolio</h4>
-                <p>Deep-dive analysis on fluid dynamics, chassis design optimization, and machining tolerances.</p>
-                <a href="#" class="btn">View Document</a>
-            </div>
-            <div class="portfolio-card reveal">
-                <h4>Enterprise Portfolio</h4>
-                <p>Brand activation strategy, corporate outreach systems, budget tracking, and project workflow matrices.</p>
-                <a href="#" class="btn">View Document</a>
-            </div>
-        </div>
-    </section>
+    <!-- Documents -->
+    <section id="portfolios">
+        <h3 class="section-title reveal">Engineering & Enterprise</h3>
+        <div class="portfolio-grid">
+            <div class="portfolio-card reveal">
+                <h4>Engineering Portfolio</h4>
+                <p>Deep-dive analysis on fluid dynamics, chassis design optimization, and machining tolerances.</p>
+                <a href="#" class="btn">View Document</a>
+            </div>
+            <div class="portfolio-card reveal">
+                <h4>Enterprise Portfolio</h4>
+                <p>Brand activation strategy, corporate outreach systems, budget tracking, and project workflow matrices.</p>
+                <a href="#" class="btn">View Document</a>
+            </div>
+        </div>
+    </section>
 
-    <section id="contact">
-        <h3 class="section-title reveal" style="margin-bottom: 30px;">Connect With Us</h3>
-        <div class="contact-box reveal">
-            <p>Interested in supporting our journey? Contact us here for corporate sponsorship enquiries, corporate partnerships, or general team questions. Launch an immediate connection link below.</p>
-            <a href="mailto:Photonstemracing@gmail.com?subject=Photon%20Sponsorship%20Enquiry" class="btn">Launch Email App</a>
-        </div>
-    </section>
+    <!-- Dedicated Interactive Contact Section -->
+    <section id="contact">
+        <h3 class="section-title reveal">Connect With Us</h3>
+        <div class="contact-box reveal">
+            <p>Interested in supporting our journey? Contact us here for corporate sponsorship enquiries, corporate partnerships, or general team questions. Launch an immediate connection link below.</p>
+            <a href="mailto:Photonstemracing@gmail.com?subject=Photon%20Sponsorship%20Enquiry" class="btn">Launch Email App</a>
+        </div>
+    </section>
 
-    <div class="institutional-logos">
-        <h5>Affiliated Entities</h5>
-        <div class="logo-flex">
-            <a href="https://rea.org.au/f1-in-schools/" target="_blank" class="logo-item reveal">
-                <div class="logo-wrapper">
-                    <img src="stem_racing_logo.PNG" alt="STEM Racing Australia">
-                </div>
-                <p>STEM Racing</p>
-            </a>
-            <a href="https://riversidehigh.education.tas.edu.au/" target="_blank" class="logo-item reveal">
-                <div class="logo-wrapper">
-                    <img src="riverside_logo.JPG" alt="Riverside High School Launceston">
-                </div>
-                <p>Riverside High School</p>
-            </a>
-        </div>
-    </div>
+    <!-- Affiliated Institutional Logos Section -->
+    <div class="institutional-logos">
+        <h5>Affiliated Entities</h5>
+        <div class="logo-flex">
+            <a href="https://rea.org.au/f1-in-schools/" target="_blank" class="logo-item reveal">
+                <div class="logo-wrapper">
+                    <img src="stem_racing_logo.PNG" alt="STEM Racing Australia">
+                </div>
+                <p>STEM Racing</p>
+            </a>
+            <a href="https://riversidehigh.education.tas.edu.au/" target="_blank" class="logo-item reveal">
+                <div class="logo-wrapper">
+                    <img src="riverside_logo.JPG" alt="Riverside High School Launceston">
+                </div>
+                <p>Riverside High School</p>
+            </a>
+        </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 PHOTON. ALL RIGHTS RESERVED.</p>
-    </footer>
+    <footer>
+        <p>&copy; 2026 PHOTON. ALL RIGHTS RESERVED.</p>
+    </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <script>
-        if (window.history.scrollRestoration) {
-            window.history.scrollRestoration = 'manual';
-        }
-        if (window.location.hash) {
-            history.replaceState("", document.title, window.location.pathname + window.location.search);
-        }
-        window.scrollTo(0, 0);
+    <script>
+        if (window.history.scrollRestoration) {
+            window.history.scrollRestoration = 'manual';
+        }
+        if (window.location.hash) {
+            history.replaceState("", document.title, window.location.pathname + window.location.search);
+        }
+        window.scrollTo(0, 0);
 
-        function initializeGridGlowSystem() {
-            const glowTargetBox = document.getElementById('glow-particles-container');
-            if(!glowTargetBox) return; // safety check
-            glowTargetBox.innerHTML = ''; 
-            
-            const bodyBoundingHeight = Math.max(
-                document.body.scrollHeight, 
-                document.body.offsetHeight, 
-                document.documentElement.clientHeight, 
-                document.documentElement.scrollHeight, 
-                document.documentElement.offsetHeight
-            );
+        function initializeGridGlowSystem() {
+            const glowTargetBox = document.getElementById('glow-particles-container');
+            glowTargetBox.innerHTML = ''; 
+            
+            const bodyBoundingHeight = Math.max(
+                document.body.scrollHeight, 
+                document.body.offsetHeight, 
+                document.documentElement.clientHeight, 
+                document.documentElement.scrollHeight, 
+                document.documentElement.offsetHeight
+            );
 
-            const documentPixelsToVwUnits = bodyBoundingHeight / window.innerWidth * 100;
-            const totalGlowPoints = 40; 
+            const documentPixelsToVwUnits = bodyBoundingHeight / window.innerWidth * 100;
+            const totalGlowPoints = 40; 
 
-            for (let i = 0; i < totalGlowPoints; i++) {
-                const node = document.createElement('div');
-                node.classList.add('glow-particle');
-                node.style.position = 'absolute'; // Ensure they render
-                node.style.background = 'rgba(255, 235, 0, 0.5)'; // Fallback inline styling
-                node.style.borderRadius = '50%';
-                
-                const nodeX = Math.random() * 100; 
-                const nodeY = Math.random() * documentPixelsToVwUnits; 
-                
-                const nodeSize = 15 + (Math.random() * 40);
-                const nodeBreatheDuration = 4 + (Math.random() * 5); 
-                const nodePhaseOffset = Math.random() * -8; 
+            for (let i = 0; i < totalGlowPoints; i++) {
+                const node = document.createElement('div');
+                node.classList.add('glow-particle');
+                
+                const nodeX = Math.random() * 100; 
+                const nodeY = Math.random() * documentPixelsToVwUnits; 
+                
+                const nodeSize = 15 + (Math.random() * 40);
+                const nodeBreatheDuration = 4 + (Math.random() * 5); 
+                const nodePhaseOffset = Math.random() * -8; 
 
-                node.style.left = `${nodeX}vw`;
-                node.style.top = `${nodeY}vw`;
-                node.style.width = `${nodeSize}px`;
-                node.style.height = `${nodeSize}px`;
-                node.style.setProperty('--pulse-duration', `${nodeBreatheDuration}s`);
-                node.style.setProperty('--pulse-delay', `${nodePhaseOffset}s`);
-                
-                glowTargetBox.appendChild(node);
-            }
-        }
+                node.style.setProperty('--x', `${nodeX}vw`);
+                node.style.setProperty('--y', `${nodeY}vw`);
+                node.style.setProperty('--size', `${nodeSize}px`);
+                node.style.setProperty('--pulse-duration', `${nodeBreatheDuration}s`);
+                node.style.setProperty('--pulse-delay', `${nodePhaseOffset}s`);
+                
+  ;
+            border: 1px solid rgba(255, 235, 0, 0.2);
+            border-radius: 12px;
+            padding: 70px 50px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 235, 0, 0.05);
+        }
 
-        window.addEventListener('load', initializeGridGlowSystem);
-        let resizeDebounceTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeDebounceTimer);
-            resizeDebounceTimer = setTimeout(initializeGridGlowSystem, 250);
-        });
+        .contact-box p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            margin: 0 0 45px 0;
+            letter-spacing: 0.3px;
+        }
 
-        const rootStyle = document.documentElement.style;
-        let ticking = false;
+        .institutional-logos {
+            position: relative;
+            z-index: 35;
+            border-top: 1px solid rgba(255, 235, 0, 0.1);
+            background-color: rgba(2, 2, 2, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 80px 20px;
+            text-align: center;
+        }
 
-        function processScrollMatrix() {
-            const rawTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-            rootStyle.setProperty('--scroll-y', `${rawTop}px`);
-            ticking = false;
-        }
+        .institutional-logos h5 {
+            margin: 0 0 45px 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #666666;
+        }
 
-        function triggerScrollProcess() {
-            if (!ticking) {
-                window.requestAnimationFrame(processScrollMatrix);
-                ticking = true;
-            }
-        }
+        .logo-flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            flex-wrap: wrap;
+        }
 
-        window.addEventListener('scroll', triggerScrollProcess, { passive: true });
-        document.addEventListener('scroll', triggerScrollProcess, { passive: true });
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
 
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.05
-        };
+        .logo-item:hover {
+            transform: scale(1.04);
+        }
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    entry.target.style.opacity = '1'; // Safety trigger for troubleshooting
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target); 
-                }
-            });
-        }, observerOptions);
+        .logo-wrapper {
+            height: 110px;
+            width: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
 
-        document.querySelectorAll('.reveal').forEach(element => {
-            // Apply baseline CSS for the reveal animation to work if it wasn't in the snippet
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'all 0.6s ease-out';
-            observer.observe(element);
-        });
+        .logo-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.8));
+        }
 
-        const carViewer = document.getElementById('animated-car');
-        const studioToggle = document.getElementById('studio-master-toggle');
-        const fullscreenWidget = document.getElementById('fullscreen-widget');
-        const heroTextContainer = document.getElementById('hero-text-container');
-        
-        let orbitTimeline = 0;
-        let isStudioInteractive = false;
+        .logo-item p {
+            margin: 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.5);
+        }
 
-        function renderCinematicFlyby() {
-            if (isStudioInteractive || !carViewer) return;
+        footer {
+            position: relative;
+            z-index: 35;
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 0.8rem;
+            color: #555555;
+            border-top: 1px solid rgba(255, 235, 0, 0.1);
+            background-color: #000000;
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
 
-            orbitTimeline += 0.0022; 
+    <!-- Infrastructure Base Overlay Layouts -->
+    <div id="bg-grid-overlay"></div>
+    <div id="glow-particles-container"></div>
 
-            const horizontalOrbit = (orbitTimeline * 180 / Math.PI) % 360; 
-            const verticalSweep = 66 + (Math.sin(orbitTimeline * 1.5) * 7); 
-            const dynamicZoomRadius = 92 + (Math.cos(orbitTimeline * 1.1) * 16); 
+    <nav>
+        <div class="nav-left-cluster">
+            <h1 onclick="window.location.href=window.location.pathname">PHOTON</h1>
+            <button class="studio-toggle-btn" id="studio-master-toggle">Explore Car</button>
+        </div>
+        <ul>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#sponsors">Partners</a></li>
+            <li><a href="#portfolios">Docs</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-            carViewer.cameraOrbit = `${horizontalOrbit}deg ${verticalSweep}deg ${dynamicZoomRadius}%`;
+    <!-- Entry Zone Layout -->
+    <header id="hero">
+        <div id="hero-text-container">
+            <h2>PHOTON</h2>
+            <p>At the speed of light</p>
+        </div>
+        
+        <div id="car-viewer">
+            <model-viewer 
+                id="animated-car"
+                src="2024aramidversion2.0029.glb" 
+                alt="Aramid - 2024 fastest car" 
+                autoplay
+                shadow-intensity="1"
+                exposure="1.25">
+            </model-viewer>
 
-            requestAnimationFrame(renderCinematicFlyby);
-        }
+            <button class="fullscreen-toggle" id="fullscreen-widget" title="Toggle Fullscreen Render View">
+                <span>⛶</span> Fullscreen
+            </button>
 
-        if (carViewer) {
-            carViewer.addEventListener('load', () => {
-                carViewer.cameraOrbit = '180deg 45deg 120%';
-                if(typeof carViewer.jumpCameraToGoal === 'function') {
-                    carViewer.jumpCameraToGoal();
-                }
+            <div class="viewer-details">
+                <p class="viewer-caption">
+                    2024 fastest car from previous development team, <span class="highlight">aramid</span>. this is the fastest car in the states history
+                </p>
+                <a href="https://www.instagram.com/photonstemracing?utm_source=qr&igsh=MW5sNTFzbm5vbXVrdA%3D%3D" target="_blank" rel="noopener" class="instagram-btn">
+                    <span>📸</span> View @photonstemracing
+                </a>
+            </div>
+        </div>
+    </header>
 
-                setTimeout(() => {
-                    renderCinematicFlyby();
-                }, 400);
-            });
-        }
+    <!-- Team Roles Section -->
+    <section id="team">
+        <h3 class="section-title reveal">Team Roles</h3>
+        
+        <div style="margin-bottom: 80px;">
+            <h4 class="sub-tier-title reveal">Engineering Division</h4>
+            <div class="team-grid">
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Gifford Roy</h4>
+                        <p>Design Engineer</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Bruno Gomez Pena</h4>
+                        <p>Manufacturing Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        if (studioToggle && carViewer) {
-            studioToggle.addEventListener('click', (e) => {
-                e.preventDefault();
+        <div>
+            <h4 class="sub-tier-title reveal">Enterprise Division</h4>
+            <div class="team-grid">
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Evan Goodwin</h4>
+                        <p>Team Manager</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Zeke Short</h4>
+                        <p>Resource Manager</p>
+                    </div>
+                </div>
+                <div class="team-card reveal">
+                    <div class="member-image-slot">Placeholder Photo</div>
+                    <div class="member-info">
+                        <h4>Lizzie Cooke</h4>
+                        <p>Graphic Design</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                if (!isStudioInteractive) {
-                    // Turn ON Interactive Studio Mode
-                    isStudioInteractive = true;
-                    carViewer.setAttribute('camera-controls', '');
-                    carViewer.style.pointerEvents = 'auto';
-                    
-                    if(heroTextContainer) heroTextContainer.style.opacity = '0';
-                    if(fullscreenWidget) fullscreenWidget.style.display = 'block';
-                    
-                    studioToggle.textContent = 'Lock Canvas';
-                    studioToggle.classList.add('active-studio');
-                } else {
-                    // Turn OFF Interactive Studio Mode
-                    isStudioInteractive = false;
-                    carViewer.removeAttribute('camera-controls');
-                    carViewer.style.pointerEvents = 'none';
-                    
-                    if(heroTextContainer) heroTextContainer.style.opacity = '1';
-                    
-                    studioToggle.textContent = 'Explore Car';
-                    studioToggle.classList.remove('active-studio');
+    <!-- Sponsorship Pipeline -->
+    <section id="sponsors">
+        <h3 class="section-title reveal">Our Partners</h3>
+        <div class="sponsor-tier-container">
+            <div class="tier-group platinum reveal">
+                <div class="tier-title">Platinum Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                </div>
+            </div>
+            <div class="tier-group gold reveal">
+                <div class="tier-title">Gold Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                    <div class="sponsor-card">Sponsor Slot</div>
+                </div>
+            </div>
+            <div class="tier-group silver reveal">
+                <div class="tier-title">Silver Partners</div>
+                <div class="sponsor-grid">
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                    <div class="sponsor-card">Partner</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    orbitTimeline = Math.PI; 
-                    
-                    const targetHorizontal = (orbitTimeline * 180 / Math.PI) % 360; 
-                    const targetVertical = 66 + (Math.sin(orbitTimeline * 1.5) * 7); 
-                    const targetZoom = 92 + (Math.cos(orbitTimeline * 1.1) * 16); 
-                    
-                    carViewer.cameraOrbit = `${targetHorizontal}deg ${targetVertical}deg ${targetZoom}%`;
-                    
-                    setTimeout(() => {
-                        if (!isStudioInteractive) {
-                            renderCinematicFlyby();
-                        }
-                    }, 1800); 
-                }
-            });
-        }
+    <!-- Documents -->
+    <section id="portfolios">
+        <h3 class="section-title reveal">Engineering & Enterprise</h3>
+        <div class="portfolio-grid">
+            <div class="portfolio-card reveal">
+                <h4>Engineering Portfolio</h4>
+                <p>Deep-dive analysis on fluid dynamics, chassis design optimization, and machining tolerances.</p>
+                <a href="#" class="btn">View Document</a>
+            </div>
+            <div class="portfolio-card reveal">
+                <h4>Enterprise Portfolio</h4>
+                <p>Brand activation strategy, corporate outreach systems, budget tracking, and project workflow matrices.</p>
+                <a href="#" class="btn">View Document</a>
+            </div>
+        </div>
+    </section>
 
-        const viewRenderContainer = document.getElementById('car-viewer');
+    <!-- Dedicated Interactive Contact Section -->
+    <section id="contact">
+        <h3 class="section-title reveal">Connect With Us</h3>
+        <div class="contact-box reveal">
+            <p>Interested in supporting our journey? Contact us here for corporate sponsorship enquiries, corporate partnerships, or general team questions. Launch an immediate connection link below.</p>
+            <a href="mailto:Photonstemracing@gmail.com?subject=Photon%20Sponsorship%20Enquiry" class="btn">Launch Email App</a>
+        </div>
+    </section>
 
-        if (fullscreenWidget && viewRenderContainer) {
-            fullscreenWidget.addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    if (viewRenderContainer.requestFullscreen) {
-                        viewRenderContainer.requestFullscreen();
-                    } else if (viewRenderContainer.webkitRequestFullscreen) { 
-                        viewRenderContainer.webkitRequestFullscreen();
-                    }
-                    fullscreenWidget.innerHTML = '<span>内</span> Close Screen';
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    }
-                    fullscreenWidget.innerHTML = '<span>⛶</span> Fullscreen';
-                }
-            });
-        }
+    <!-- Affiliated Institutional Logos Section -->
+    <div class="institutional-logos">
+        <h5>Affiliated Entities</h5>
+        <div class="logo-flex">
+            <a href="https://rea.org.au/f1-in-schools/" target="_blank" class="logo-item reveal">
+                <div class="logo-wrapper">
+                    <img src="stem_racing_logo.PNG" alt="STEM Racing Australia">
+                </div>
+                <p>STEM Racing</p>
+            </a>
+            <a href="https://riversidehigh.education.tas.edu.au/" target="_blank" class="logo-item reveal">
+                <div class="logo-wrapper">
+                    <img src="riverside_logo.JPG" alt="Riverside High School Launceston">
+                </div>
+                <p>Riverside High School</p>
+            </a>
+        </div>
+    </div>
 
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && fullscreenWidget) {
-                fullscreenWidget.innerHTML = '<span>⛶</span> Fullscreen';
-            }
-        });
-    </script>
+    <footer>
+        <p>&copy; 2026 PHOTON. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        if (window.history.scrollRestoration) {
+            window.history.scrollRestoration = 'manual';
+        }
+        if (window.location.hash) {
+            history.replaceState("", document.title, window.location.pathname + window.location.search);
+        }
+        window.scrollTo(0, 0);
+
+        function initializeGridGlowSystem() {
+            const glowTargetBox = document.getElementById('glow-particles-container');
+            glowTargetBox.innerHTML = ''; 
+            
+            const bodyBoundingHeight = Math.max(
+                document.body.scrollHeight, 
+                document.body.offsetHeight, 
+                document.documentElement.clientHeight, 
+                document.documentElement.scrollHeight, 
+                document.documentElement.offsetHeight
+            );
+
+            const documentPixelsToVwUnits = bodyBoundingHeight / window.innerWidth * 100;
+            const totalGlowPoints = 40; 
+
+            for (let i = 0; i < totalGlowPoints; i++) {
+                const node = document.createElement('div');
+                node.classList.add('glow-particle');
+                
+                const nodeX = Math.random() * 100; 
+                const nodeY = Math.random() * documentPixelsToVwUnits; 
+                
+                const nodeSize = 15 + (Math.random() * 40);
+                const nodeBreatheDuration = 4 + (Math.random() * 5); 
+                const nodePhaseOffset = Math.random() * -8; 
+
+                node.style.setProperty('--x', `${nodeX}vw`);
+                node.style.setProperty('--y', `${nodeY}vw`);
+                node.style.setProperty('--size', `${nodeSize}px`);
+                node.style.setProperty('--pulse-duration', `${nodeBreatheDuration}s`);
+                node.style.setProperty('--pulse-delay', `${nodePhaseOffset}s`);
+                
+                glowTargetBox.appendChild(node);
+            }
+        }
+
+        window.addEventListener('load', initializeGridGlowSystem);
+        let resizeDebounceTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeDebounceTimer);
+            resizeDebounceTimer = setTimeout(initializeGridGlowSystem, 250);
+        });
+
+        const rootStyle = document.documentElement.style;
+        let ticking = false;
+
+        function processScrollMatrix() {
+            const rawTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            rootStyle.setProperty('--scroll-y', `${rawTop}px`);
+            ticking = false;
+        }
+
+        function triggerScrollProcess() {
+            if (!ticking) {
+                window.requestAnimationFrame(processScrollMatrix);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', triggerScrollProcess, { passive: true });
+        document.addEventListener('scroll', triggerScrollProcess, { passive: true });
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.05
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(element => {
+            observer.observe(element);
+        });
+
+        const carViewer = document.getElementById('animated-car');
+        const studioToggle = document.getElementById('studio-master-toggle');
+        const fullscreenWidget = document.getElementById('fullscreen-widget');
+        const heroTextContainer = document.getElementById('hero-text-container');
+        
+        let orbitTimeline = 0;
+        let isStudioInteractive = false;
+
+        function renderCinematicFlyby() {
+            if (isStudioInteractive) return;
+
+            orbitTimeline += 0.0022; 
+
+            const horizontalOrbit = (orbitTimeline * 180 / Math.PI) % 360; 
+            const verticalSweep = 66 + (Math.sin(orbitTimeline * 1.5) * 7); 
+            const dynamicZoomRadius = 92 + (Math.cos(orbitTimeline * 1.1) * 16); 
+
+            carViewer.cameraOrbit = `${horizontalOrbit}deg ${verticalSweep}deg ${dynamicZoomRadius}%`;
+
+            requestAnimationFrame(renderCinematicFlyby);
+        }
+
+        carViewer.addEventListener('load', () => {
+            carViewer.cameraOrbit = '180deg 45deg 120%';
+            carViewer.jumpCameraToGoal();
+
+            setTimeout(() => {
+                renderCinematicFlyby();
+            }, 400);
+        });
+
+        studioToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            if (!isStudioInteractive) {
+                // Turn ON Interactive Studio Mode
+                isStudioInteractive = true;
+                carViewer.setAttribute('camera-controls', '');
+                carViewer.style.pointerEvents = 'auto';
+                
+                heroTextContainer.style.opacity = '0';
+                fullscreenWidget.classList.add('visible-widget');
+                
+                studioToggle.textContent = 'Lock Canvas';
+                studioToggle.classList.add('active-studio');
+            } else {
+                // Turn OFF Interactive Studio Mode (The Revert Process)
+                isStudioInteractive = false;
+                carViewer.removeAttribute('camera-controls');
+                carViewer.style.pointerEvents = 'none';
+                
+                heroTextContainer.style.opacity = '1';
+                fullscreenWidget.classList.remove('visible-widget');
+                
+                studioToggle.textContent = 'Explore Car';
+                studioToggle.classList.remove('active-studio');
+
+                // 1. Re-align the mathematical timeline point perfectly facing the user
+                orbitTimeline = Math.PI; 
+                
+                // 2. Pre-calculate the exact coordinates of the cinematic route at that specific timeline frame
+                const targetHorizontal = (orbitTimeline * 180 / Math.PI) % 360; 
+                const targetVertical = 66 + (Math.sin(orbitTimeline * 1.5) * 7); 
+                const targetZoom = 92 + (Math.cos(orbitTimeline * 1.1) * 16); 
+                
+                // 3. Dispatch a single static coordinate change and let the built-in interpolator smoothly glide the viewer back
+                carViewer.cameraOrbit = `${targetHorizontal}deg ${targetVertical}deg ${targetZoom}%`;
+                
+                // 4. Wait 1.8 seconds for the glide to physically complete before flooding it with animation frame updates
+                setTimeout(() => {
+                    if (!isStudioInteractive) {
+                        renderCinematicFlyby();
+                    }
+                }, 1800); 
+            }
+        });
+
+        const viewRenderContainer = document.getElementById('car-viewer');
+
+        fullscreenWidget.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (viewRenderContainer.requestFullscreen) {
+                    viewRenderContainer.requestFullscreen();
+                } else if (viewRenderContainer.webkitRequestFullscreen) { 
+                    viewRenderContainer.webkitRequestFullscreen();
+                }
+                fullscreenWidget.innerHTML = '<span>内</span> Close Screen';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                fullscreenWidget.innerHTML = '<span>⛶</span> Fullscreen';
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                fullscreenWidget.innerHTML = '<span>⛶</span> Fullscreen';
+            }
+        });
+    </script>
 </body>
 </html>
